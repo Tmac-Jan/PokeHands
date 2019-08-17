@@ -38,6 +38,7 @@ public class CompareCard implements Comparator<Card> {
           result= compareCardTypeHighCard(player1, player2);
           break;
         case PAIR:
+        case TWOPAIRS:
           result = compareCardTypePair(player1,player2);
           break;
       }
@@ -59,8 +60,11 @@ public class CompareCard implements Comparator<Card> {
     if (isHighCard(player)) {
       return HIGHCARD;
     }
-    if (isPair(player)){
+    else if (isPair(player)){
       return PAIR;
+    }
+    else if (isTwoPair(player)){
+      return TWOPAIRS;
     }
     return 0;
   }
@@ -102,11 +106,26 @@ public class CompareCard implements Comparator<Card> {
         count++;
       }
     }
-    if (playerMap1 == null){
-      playerMap1=cardMap;
-    }else
-      playerMap2=cardMap;
     return count>0?true:false;
+  }
+  private boolean isTwoPair(List<Card> player){
+    int count = 0;
+    Map<String, Integer> cardMap = new HashMap<>();
+    player.stream().forEach(e -> {
+      if (cardMap.get(e.getNumber()) == null) {
+        cardMap.put(e.getNumber(), 1);
+      } else {
+        Integer result = cardMap.get(e.getNumber());
+        cardMap.put(e.getNumber(), result + 1);
+      }
+    });
+
+    for (Map.Entry<String, Integer> map : cardMap.entrySet()) {
+      if (map.getValue() > 1) {
+        count++;
+      }
+    }
+    return count>1?true:false;
   }
   private String compareCardTypePair(List<Card> player1,List<Card> player2){
     List<Integer> player1CardNumberList = new ArrayList<>();
@@ -147,7 +166,6 @@ public class CompareCard implements Comparator<Card> {
   private String compareCardTypeHighCard(List<Card> player1, List<Card> player2) {
     Card playerMax1 = player1.stream().max(new CompareCard()).get();
     Card playerMax2 = player2.stream().max(new CompareCard()).get();
-
     if (compare(playerMax1, playerMax2) == 1) {
       return PLAYER_1_WIN;
     } else {
