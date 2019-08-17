@@ -53,4 +53,8 @@ public class Card  {
     return integerHashMap.get(this.number)==null?this.number:integerHashMap.get(this.number);
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
 }

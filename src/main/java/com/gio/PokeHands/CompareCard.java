@@ -55,9 +55,6 @@ public class CompareCard implements Comparator<Card> {
       Integer.parseInt(c2.getNumber());
   }
 
-  //  private int compareCardType(Integer player1, Integer player2){
-//    return player1-player2;
-//  }
   private int getCardType(List<Card> player) {
     if (isHighCard(player)) {
       return HIGHCARD;
@@ -112,9 +109,6 @@ public class CompareCard implements Comparator<Card> {
     return count>0?true:false;
   }
   private String compareCardTypePair(List<Card> player1,List<Card> player2){
-//    int pairCount1 = (int) playerMap1.entrySet().stream().filter(e->e.getValue()>1).count();
-////    int pairCount2 = (int) playerMap1.entrySet().stream().filter(e->e.getValue()>1).count();
-    //String result = "";
     List<Integer> player1CardNumberList = new ArrayList<>();
     player1.forEach(e->player1CardNumberList.add(Integer.parseInt(e.getNumber())));
     List<Integer> player2CardNumberList = new ArrayList<>();
@@ -124,12 +118,30 @@ public class CompareCard implements Comparator<Card> {
       .collect(Collectors.toList());
     List<Integer> player2DistinctList = player2CardNumberList.stream().distinct()
       .collect(Collectors.toList());
+
+    List<Integer> player1PairList =  player1CardNumberList.stream()
+      .collect(Collectors.toMap(e -> e, e -> 1, (a, b) -> a + b)) // 获得元素出现频率的 Map，键为元素，值为元素出现的次数
+      .entrySet().stream() // Set<Entry>转换为Stream<Entry>
+      .filter(entry -> entry.getValue() > 1) // 过滤出元素出现次数大于 1 的 entry
+      .map(entry -> entry.getKey()) // 获得 entry 的键（重复元素）对应的 Stream
+      .collect(Collectors.toList()); // 转化为 List
+    List<Integer> player2PairList =  player2CardNumberList.stream()
+      .collect(Collectors.toMap(e -> e, e -> 1, (a, b) -> a + b)) // 获得元素出现频率的 Map，键为元素，值为元素出现的次数
+      .entrySet().stream() // Set<Entry>转换为Stream<Entry>
+      .filter(entry -> entry.getValue() > 1) // 过滤出元素出现次数大于 1 的 entry
+      .map(entry -> entry.getKey()) // 获得 entry 的键（重复元素）对应的 Stream
+      .collect(Collectors.toList()); // 转化为 List
     if (player1DistinctList.size()<player2DistinctList.size()){
       return PLAYER_1_WIN;
     }else if (player1DistinctList.size()>player2DistinctList.size()){
       return PLAYER_2_WIN;
     }else{
-     return compareCardTypeHighCard(player1,player2);
+      String result = compareCardTypeBase(player1PairList,player2PairList);
+     if (result.equals(TIE)){
+       return compareCardTypeHighCard(player1,player2);
+     }else{
+       return result;
+     }
     }
   }
   private String compareCardTypeHighCard(List<Card> player1, List<Card> player2) {
@@ -141,6 +153,18 @@ public class CompareCard implements Comparator<Card> {
     } else {
       if (Integer.parseInt(playerMax1.getNumber())
         == Integer.parseInt(playerMax2.getNumber())) {
+        return TIE;
+      } else
+        return PLAYER_2_WIN;
+    }
+  }
+  private String compareCardTypeBase(List<Integer>player1,List<Integer>player2){
+    Integer playerMax1 = player1.stream().reduce(Integer::max).get();
+    Integer playerMax2 = player2.stream().reduce(Integer::max).get();
+    if (playerMax1 >playerMax2) {
+      return PLAYER_1_WIN;
+    } else {
+      if (playerMax1.equals(playerMax2)) {
         return TIE;
       } else
         return PLAYER_2_WIN;
