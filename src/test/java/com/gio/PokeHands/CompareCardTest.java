@@ -180,4 +180,5 @@ public class CompareCardTest {
     String result = compareCard.judgeTwoPlayerPoke(player1,player2);
     Assert.assertEquals(PLAYER_1_WIN,result);
   }
+
 }

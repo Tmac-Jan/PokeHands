@@ -178,12 +178,7 @@ public class CompareCard implements Comparator<Card> {
     }else if (player1DistinctList.size()>player2DistinctList.size()){
       return PLAYER_2_WIN;
     }else{
-      String result = compareCardTypeBase(player1PairList,player2PairList);
-      if (result.equals(TIE)){
-        return compareCardTypePair(player1,player2);
-      }else{
-        return result;
-      }
+        return compareCardTypeBase(player1PairList,player2PairList);
     }
   }
 
