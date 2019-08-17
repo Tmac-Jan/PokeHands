@@ -138,4 +138,25 @@ public class CompareCardTest {
     String result = compareCard.judgeTwoPlayerPoke(player1,player2);
     Assert.assertEquals(PLAYER_1_WIN,result);
   }
+  @Test
+  public void should_return_player2Win_when_player1_is_two_pair_and_player2_too_and_player1_equal_player2_but_player2_highCard_is_bigger(){
+    List<Card> player1 = new ArrayList<Card>(){{
+      add(new Card("H","4"));
+      add(new Card("D","4"));
+      add(new Card("S","5"));
+      add(new Card("C","5"));
+      add(new Card("D","K"));
+    }};
+    List<Card> player2 = new ArrayList<Card>(){{
+      add(new Card("S","4"));
+      add(new Card("C","4"));
+      add(new Card("H","5"));
+      add(new Card("D","5"));
+      add(new Card("C","A"));
+    }};
+
+    CompareCard compareCard = new CompareCard();
+    String result = compareCard.judgeTwoPlayerPoke(player1,player2);
+    Assert.assertEquals(PLAYER_2_WIN,result);
+  }
 }
