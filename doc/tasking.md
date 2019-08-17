@@ -103,4 +103,40 @@
        - ->(CompareCard) 
      
        - output player1 Win!
+  - ### Case7
+       - input List<Card> player1 = new ArrayList<Card>(){{
+                      add(new Card("H","2"));
+                      add(new Card("D","2"));
+                      add(new Card("S","5"));
+                      add(new Card("C","9"));
+                      add(new Card("D","A"));
+                    }};
+       - input List<Card> player2 = new ArrayList<Card>(){{
+                         add(new Card("H","4"));
+                         add(new Card("S","4"));
+                         add(new Card("D","5"));
+                         add(new Card("S","9"));
+                         add(new Card("C","A"));
+                       }};
   
+       - ->(CompareCard) 
+       
+       - output player2 Win!
+  - ### Case8
+       - input List<Card> player1 = new ArrayList<Card>(){{
+                    add(new Card("H","2"));
+                    add(new Card("D","2"));
+                    add(new Card("S","5"));
+                    add(new Card("C","9"));
+                    add(new Card("D","A"));
+                  }};
+       - input List<Card> player2 = new ArrayList<Card>(){{
+                     add(new Card("S","2"));
+                     add(new Card("C","2"));
+                     add(new Card("D","5"));
+                     add(new Card("S","5"));
+                     add(new Card("C","A"));
+                   }};
+       - ->(CompareCard) 
+         
+       - output player2 Win!

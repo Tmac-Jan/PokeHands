@@ -106,10 +106,10 @@ public class CompareCardTest {
       add(new Card("D","A"));
     }};
     List<Card> player2 = new ArrayList<Card>(){{
-      add(new Card("H","4"));
-      add(new Card("S","4"));
+      add(new Card("S","2"));
+      add(new Card("C","2"));
       add(new Card("D","5"));
-      add(new Card("S","9"));
+      add(new Card("S","5"));
       add(new Card("C","A"));
     }};
 
