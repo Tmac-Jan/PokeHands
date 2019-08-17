@@ -41,6 +41,8 @@ public class CompareCard implements Comparator<Card> {
         case TWOPAIRS:
           result = compareCardTypePair(player1,player2);
           break;
+        case THREE_OF_A_KIND:
+          result = compareCardTypeThreeOfAKind(player1,player2);
       }
       return result;
     } else {
@@ -66,6 +68,9 @@ public class CompareCard implements Comparator<Card> {
     else if (isTwoPair(player)){
       return TWOPAIRS;
     }
+    else if (isThreeOfAKind(player)){
+      return  THREE_OF_A_KIND;
+    }
     return 0;
   }
 
@@ -88,7 +93,6 @@ public class CompareCard implements Comparator<Card> {
     }
     return count == 0 ? true : false;
   }
-
   private boolean isPair(List<Card> player){
     int count = 0;
     Map<String, Integer> cardMap = new HashMap<>();
@@ -127,6 +131,62 @@ public class CompareCard implements Comparator<Card> {
     }
     return count>1?true:false;
   }
+  private boolean isThreeOfAKind(List<Card>player){
+    int count = 0;
+    Map<String, Integer> cardMap = new HashMap<>();
+    player.stream().forEach(e -> {
+      if (cardMap.get(e.getNumber()) == null) {
+        cardMap.put(e.getNumber(), 1);
+      } else {
+        Integer result = cardMap.get(e.getNumber());
+        cardMap.put(e.getNumber(), result + 1);
+      }
+    });
+
+    for (Map.Entry<String, Integer> map : cardMap.entrySet()) {
+      if (map.getValue() > 2) {
+        count++;
+      }
+    }
+    return count>1?true:false;
+  }
+  private String compareCardTypeThreeOfAKind(List<Card> player1,List<Card>player2){
+    List<Integer> player1CardNumberList = new ArrayList<>();
+    player1.forEach(e->player1CardNumberList.add(Integer.parseInt(e.getNumber())));
+    List<Integer> player2CardNumberList = new ArrayList<>();
+    player2.forEach(e->player2CardNumberList.add(Integer.parseInt(e.getNumber())));
+
+    List<Integer> player1DistinctList = player1CardNumberList.stream().distinct()
+      .collect(Collectors.toList());
+    List<Integer> player2DistinctList = player2CardNumberList.stream().distinct()
+      .collect(Collectors.toList());
+
+    List<Integer> player1PairList =  player1CardNumberList.stream()
+      .collect(Collectors.toMap(e -> e, e -> 1, (a, b) -> a + b)) // 获得元素出现频率的 Map，键为元素，值为元素出现的次数
+      .entrySet().stream() // Set<Entry>转换为Stream<Entry>
+      .filter(entry -> entry.getValue() > 2) // 过滤出元素出现次数大于 2 的 entry
+      .map(entry -> entry.getKey()) // 获得 entry 的键（重复元素）对应的 Stream
+      .collect(Collectors.toList()); // 转化为 List
+    List<Integer> player2PairList =  player2CardNumberList.stream()
+      .collect(Collectors.toMap(e -> e, e -> 1, (a, b) -> a + b)) // 获得元素出现频率的 Map，键为元素，值为元素出现的次数
+      .entrySet().stream() // Set<Entry>转换为Stream<Entry>
+      .filter(entry -> entry.getValue() > 2) // 过滤出元素出现次数大于 2 的 entry
+      .map(entry -> entry.getKey()) // 获得 entry 的键（重复元素）对应的 Stream
+      .collect(Collectors.toList()); // 转化为 List
+    if (player1DistinctList.size()<player2DistinctList.size()){
+      return PLAYER_1_WIN;
+    }else if (player1DistinctList.size()>player2DistinctList.size()){
+      return PLAYER_2_WIN;
+    }else{
+      String result = compareCardTypeBase(player1PairList,player2PairList);
+      if (result.equals(TIE)){
+        return compareCardTypePair(player1,player2);
+      }else{
+        return result;
+      }
+    }
+  }
+
   private String compareCardTypePair(List<Card> player1,List<Card> player2){
     List<Integer> player1CardNumberList = new ArrayList<>();
     player1.forEach(e->player1CardNumberList.add(Integer.parseInt(e.getNumber())));
