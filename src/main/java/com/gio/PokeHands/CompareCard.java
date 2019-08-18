@@ -47,8 +47,12 @@ public class CompareCard implements Comparator<Card> {
           result = compareCardTypeThreeOfAKind(player1, player2);
           break;
         case FLUSH:
-          result = compareCardTypeFlush(player1,player2);
+          result = compareCardTypeFlush(player1, player2);
           break;
+        case FULL_HOUSE:
+          result = compareCardTypeFullHouse(player1,player2);
+          break;
+
       }
       return result;
     } else {
@@ -65,18 +69,20 @@ public class CompareCard implements Comparator<Card> {
   }
 
   private int getCardType(List<Card> player) {
-    if (isHighCard(player)) {
+    if (isStraight(player)) {
+      return STRAIGHT;
+    } else if (isFlush(player)) {
+      return FLUSH;
+    } else if (isHighCard(player)) {
       return HIGHCARD;
+    } else if (isFullHouse(player)) {
+      return FULL_HOUSE;
     } else if (isPair(player)) {
       return PAIR;
     } else if (isTwoPair(player)) {
       return TWOPAIRS;
     } else if (isThreeOfAKind(player)) {
       return THREE_OF_A_KIND;
-    } else if (isStraight(player)) {
-      return STRAIGHT;
-    }else if (isFlush(player)){
-      return FLUSH;
     }
     return 0;
   }
@@ -98,17 +104,17 @@ public class CompareCard implements Comparator<Card> {
         count++;
       }
     }
-    if (count==0){
+    if (count == 0) {
       boolean result = isStraight(player);
-       if(!result){
-         if(isFlush(player)){
-          return  false;
-         }else
-           return true;
-       }else{
-         return false;
-       }
-    }else
+      if (!result) {
+        if (isFlush(player)) {
+          return false;
+        } else
+          return true;
+      } else {
+        return false;
+      }
+    } else
       return false;
   }
 
@@ -173,15 +179,22 @@ public class CompareCard implements Comparator<Card> {
   }
 
   private boolean isStraight(List<Card> player) {
-      List<Integer> playerCardNumberList = new ArrayList<>();
-      player.forEach(e -> playerCardNumberList.add(Integer.parseInt(e.getNumber())));
-      Integer listSum = playerCardNumberList.stream().reduce(Integer::sum).orElse(0);
-      Integer n = playerCardNumberList.size();
-      Integer arithmeticProgression = n * playerCardNumberList.get(0) + n * (n - 1) / 2;
-      return arithmeticProgression.equals(listSum);
+//    List<Integer> playerCardNumberList = new ArrayList<>();
+//    player.forEach(e -> playerCardNumberList.add(Integer.parseInt(e.getNumber())));
+//    Integer listSum = playerCardNumberList.stream().reduce(Integer::sum).orElse(0);
+//    Integer n = playerCardNumberList.size();
+//    Integer arithmeticProgression = n * playerCardNumberList.get(0) + n * (n - 1) / 2;
+//    return arithmeticProgression.equals(listSum);
+    for (int i=0;i<player.size()-1;i++){
+      if (Integer.parseInt(player.get(i).getNumber())+1
+        !=Integer.parseInt(player.get(i+1).getNumber())){
+        return false;
+      }
+    }
+    return true;
   }
 
-  private boolean isFlush(List<Card>player){
+  private boolean isFlush(List<Card> player) {
     Map<String, Integer> cardColorMap = new HashMap<>();
     player.stream().forEach(e -> {
       if (cardColorMap.get(e.getColor()) == null) {
@@ -192,12 +205,27 @@ public class CompareCard implements Comparator<Card> {
       }
     });
 
-    return cardColorMap.size() ==1 ? true : false;
+    return cardColorMap.size() == 1 ? true : false;
   }
-  private String compareCardTypeFlush(List<Card> player1, List<Card> player2){
+
+  private boolean isFullHouse(List<Card> player) {
+    List<Integer> player1CardNumberList = new ArrayList<>();
+    player.forEach(e -> player1CardNumberList.add(Integer.parseInt(e.getNumber())));
+    List<Integer> player1DistinctList = player1CardNumberList.stream().distinct()
+      .collect(Collectors.toList());
+    return player1DistinctList.size() == 2;
+  }
+
+  private String compareCardTypeFullHouse(List<Card> player1, List<Card> player2) {
+    System.out.println("compareCardTypeFullHouse");
+          return compareCardTypeThreeOfAKind(player1,player2);
+  }
+
+  private String compareCardTypeFlush(List<Card> player1, List<Card> player2) {
     System.out.println("compareCardTypeFlush");
-    return compareCardTypeHighCard(player1,player2);
+    return compareCardTypeHighCard(player1, player2);
   }
+
   private String compareCardTypeThreeOfAKind(List<Card> player1, List<Card> player2) {
     List<Integer> player1CardNumberList = new ArrayList<>();
     player1.forEach(e -> player1CardNumberList.add(Integer.parseInt(e.getNumber())));
@@ -209,13 +237,13 @@ public class CompareCard implements Comparator<Card> {
     List<Integer> player2DistinctList = player2CardNumberList.stream().distinct()
       .collect(Collectors.toList());
 
-    List<Integer> player1PairList = player1CardNumberList.stream()
+    List<Integer> player1ThreeOfAKiindList = player1CardNumberList.stream()
       .collect(Collectors.toMap(e -> e, e -> 1, (a, b) -> a + b)) // 获得元素出现频率的 Map，键为元素，值为元素出现的次数
       .entrySet().stream() // Set<Entry>转换为Stream<Entry>
       .filter(entry -> entry.getValue() > 2) // 过滤出元素出现次数大于 2 的 entry
       .map(entry -> entry.getKey()) // 获得 entry 的键（重复元素）对应的 Stream
       .collect(Collectors.toList()); // 转化为 List
-    List<Integer> player2PairList = player2CardNumberList.stream()
+    List<Integer> player2ThreeOfAKiindList = player2CardNumberList.stream()
       .collect(Collectors.toMap(e -> e, e -> 1, (a, b) -> a + b)) // 获得元素出现频率的 Map，键为元素，值为元素出现的次数
       .entrySet().stream() // Set<Entry>转换为Stream<Entry>
       .filter(entry -> entry.getValue() > 2) // 过滤出元素出现次数大于 2 的 entry
@@ -226,7 +254,7 @@ public class CompareCard implements Comparator<Card> {
     } else if (player1DistinctList.size() > player2DistinctList.size()) {
       return PLAYER_2_WIN;
     } else {
-      return compareCardTypeBase(player1PairList, player2PairList);
+      return compareCardTypeBase(player1ThreeOfAKiindList, player2ThreeOfAKiindList);
     }
   }
 

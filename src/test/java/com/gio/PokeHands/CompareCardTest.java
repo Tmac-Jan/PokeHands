@@ -254,7 +254,7 @@ public class CompareCardTest {
     }};
     List<Card> player2 = new ArrayList<Card>(){{
       add(new Card("S","8"));
-      add(new Card("Q","T"));
+      add(new Card("D","T"));
       add(new Card("S","A"));
       add(new Card("S","K"));
       add(new Card("S","7"));
@@ -263,4 +263,26 @@ public class CompareCardTest {
     CompareCard compareCard = new CompareCard();
     String result = compareCard.judgeTwoPlayerPoke(player1,player2);
     Assert.assertEquals(PLAYER_1_WIN,result);
-  } }
+  }
+  @Test
+  public void should_return_player2Win_when_player1_is_FullHouse_and_player2_too_and_player1_isSmallerThan_player2(){
+    List<Card> player1 = new ArrayList<Card>(){{
+      add(new Card("H","4"));
+      add(new Card("S","4"));
+      add(new Card("C","4"));
+      add(new Card("H","J"));
+      add(new Card("H","J"));
+    }};
+    List<Card> player2 = new ArrayList<Card>(){{
+      add(new Card("S","8"));
+      add(new Card("D","8"));
+      add(new Card("C","8"));
+      add(new Card("S","K"));
+      add(new Card("C","K"));
+    }};
+
+    CompareCard compareCard = new CompareCard();
+    String result = compareCard.judgeTwoPlayerPoke(player1,player2);
+    Assert.assertEquals(PLAYER_2_WIN,result);
+  }
+}
