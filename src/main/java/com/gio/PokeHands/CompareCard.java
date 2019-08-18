@@ -45,6 +45,10 @@ public class CompareCard implements Comparator<Card> {
           break;
         case THREE_OF_A_KIND:
           result = compareCardTypeThreeOfAKind(player1, player2);
+          break;
+        case FLUSH:
+          result = compareCardTypeFlush(player1,player2);
+          break;
       }
       return result;
     } else {
@@ -71,6 +75,8 @@ public class CompareCard implements Comparator<Card> {
       return THREE_OF_A_KIND;
     } else if (isStraight(player)) {
       return STRAIGHT;
+    }else if (isFlush(player)){
+      return FLUSH;
     }
     return 0;
   }
@@ -93,14 +99,17 @@ public class CompareCard implements Comparator<Card> {
       }
     }
     if (count==0){
-      List<Integer> playerCardNumberList = new ArrayList<>();
-      player.forEach(e -> playerCardNumberList.add(Integer.parseInt(e.getNumber())));
-      Integer listSum = playerCardNumberList.stream().reduce(Integer::sum).orElse(0);
-      Integer n = playerCardNumberList.size();
-      Integer arithmeticProgression = n * playerCardNumberList.get(0) + n * (n - 1) / 2;
-      return !arithmeticProgression.equals(listSum);
+      boolean result = isStraight(player);
+       if(!result){
+         if(isFlush(player)){
+          return  false;
+         }else
+           return true;
+       }else{
+         return false;
+       }
     }else
-    return false;
+      return false;
   }
 
   private boolean isPair(List<Card> player) {
@@ -172,6 +181,23 @@ public class CompareCard implements Comparator<Card> {
       return arithmeticProgression.equals(listSum);
   }
 
+  private boolean isFlush(List<Card>player){
+    Map<String, Integer> cardColorMap = new HashMap<>();
+    player.stream().forEach(e -> {
+      if (cardColorMap.get(e.getColor()) == null) {
+        cardColorMap.put(e.getColor(), 1);
+      } else {
+        Integer result = cardColorMap.get(e.getColor());
+        cardColorMap.put(e.getColor(), result + 1);
+      }
+    });
+
+    return cardColorMap.size() ==1 ? true : false;
+  }
+  private String compareCardTypeFlush(List<Card> player1, List<Card> player2){
+    System.out.println("compareCardTypeFlush");
+    return compareCardTypeHighCard(player1,player2);
+  }
   private String compareCardTypeThreeOfAKind(List<Card> player1, List<Card> player2) {
     List<Integer> player1CardNumberList = new ArrayList<>();
     player1.forEach(e -> player1CardNumberList.add(Integer.parseInt(e.getNumber())));

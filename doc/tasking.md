@@ -226,3 +226,21 @@
                           }};
       - ->(CompareCard)  
       - output player2 Win!                     
+ - ### Case14
+       - input  List<Card> player1 = new ArrayList<Card>(){{
+                      add(new Card("H","4"));
+                      add(new Card("H","9"));
+                      add(new Card("H","Q"));
+                      add(new Card("H","J"));
+                      add(new Card("H","6"));
+                    }};
+       - input   List<Card> player2 = new ArrayList<Card>(){{
+                      add(new Card("S","8"));
+                      add(new Card("S","T"));
+                      add(new Card("S","A"));
+                      add(new Card("S","K"));
+                      add(new Card("S","7"));
+                    }};
+       - ->(CompareCard)  
+       - output player2 Win!
+        
