@@ -89,15 +89,7 @@ public class CompareCard implements Comparator<Card> {
 
     private boolean isHighCard(List<Card> player) {
         int count = 0;
-        Map<String, Integer> cardMap = new HashMap<>();
-        player.stream().forEach(e -> {
-            if (cardMap.get(e.getNumber()) == null) {
-                cardMap.put(e.getNumber(), 1);
-            } else {
-                Integer result = cardMap.get(e.getNumber());
-                cardMap.put(e.getNumber(), result + 1);
-            }
-        });
+        Map<String, Integer> cardMap = generateCardStringIntegerMap(player);
 
         for (Map.Entry<String, Integer> map : cardMap.entrySet()) {
             if (map.getValue() > 1) {
@@ -120,16 +112,7 @@ public class CompareCard implements Comparator<Card> {
 
     private boolean isPair(List<Card> player) {
         int count = 0;
-        Map<String, Integer> cardMap = new HashMap<>();
-        player.stream().forEach(e -> {
-            if (cardMap.get(e.getNumber()) == null) {
-                cardMap.put(e.getNumber(), 1);
-            } else {
-                Integer result = cardMap.get(e.getNumber());
-                cardMap.put(e.getNumber(), result + 1);
-            }
-        });
-
+        Map<String, Integer> cardMap = generateCardStringIntegerMap(player);
         for (Map.Entry<String, Integer> map : cardMap.entrySet()) {
             if (map.getValue() > 1) {
                 count++;
@@ -140,16 +123,7 @@ public class CompareCard implements Comparator<Card> {
 
     private boolean isTwoPair(List<Card> player) {
         int count = 0;
-        Map<String, Integer> cardMap = new HashMap<>();
-        player.stream().forEach(e -> {
-            if (cardMap.get(e.getNumber()) == null) {
-                cardMap.put(e.getNumber(), 1);
-            } else {
-                Integer result = cardMap.get(e.getNumber());
-                cardMap.put(e.getNumber(), result + 1);
-            }
-        });
-
+        Map<String, Integer> cardMap = generateCardStringIntegerMap(player);
         for (Map.Entry<String, Integer> map : cardMap.entrySet()) {
             if (map.getValue() > 1) {
                 count++;
@@ -160,6 +134,17 @@ public class CompareCard implements Comparator<Card> {
 
     private boolean isThreeOfAKind(List<Card> player) {
         int count = 0;
+        Map<String, Integer> cardMap = generateCardStringIntegerMap(player);
+
+        for (Map.Entry<String, Integer> map : cardMap.entrySet()) {
+            if (map.getValue() > 2) {
+                count++;
+            }
+        }
+        return count > 1 ? true : false;
+    }
+
+    private Map<String, Integer> generateCardStringIntegerMap(List<Card> player) {
         Map<String, Integer> cardMap = new HashMap<>();
         player.stream().forEach(e -> {
             if (cardMap.get(e.getNumber()) == null) {
@@ -169,13 +154,7 @@ public class CompareCard implements Comparator<Card> {
                 cardMap.put(e.getNumber(), result + 1);
             }
         });
-
-        for (Map.Entry<String, Integer> map : cardMap.entrySet()) {
-            if (map.getValue() > 2) {
-                count++;
-            }
-        }
-        return count > 1 ? true : false;
+        return cardMap;
     }
 
     private boolean isStraight(List<Card> player) {
@@ -207,6 +186,16 @@ public class CompareCard implements Comparator<Card> {
         return player1DistinctList.size() == 2;
     }
 
+    private boolean isFourKindOfAKind(List<Card> player) {
+        List<Integer> playerDistinctNumberList = getDistinctCardNumberList(player);
+        if (playerDistinctNumberList.size()!=2){
+            return false;
+        }else{
+
+        }
+        return true;
+    }
+
     private List<Integer> getDistinctCardNumberList(List<Card> player) {
         List<Integer> player1CardNumberList = new ArrayList<>();
         player.forEach(e -> player1CardNumberList.add(Integer.parseInt(e.getNumber())));
@@ -220,9 +209,6 @@ public class CompareCard implements Comparator<Card> {
         return player1CardNumberList;
     }
 
-    private boolean isFourKindOfAKind(List<Card> player) {
-        return true;
-    }
 
     private String compareCardTypeFullHouse(List<Card> player1, List<Card> player2) {
         System.out.println("compareCardTypeFullHouse");
