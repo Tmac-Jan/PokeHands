@@ -52,7 +52,9 @@ public class CompareCard implements Comparator<Card> {
                 case FULL_HOUSE:
                     result = compareCardTypeFullHouse(player1, player2);
                     break;
-
+                case FOUR_OF_A_KIND:
+                    result = compareCardTypeFourOFAKind(player1,player2);
+                    break;
             }
             return result;
         } else {
@@ -77,6 +79,8 @@ public class CompareCard implements Comparator<Card> {
             return HIGHCARD;
         } else if (isFullHouse(player)) {
             return FULL_HOUSE;
+        } else if (isFourKindOfAKind(player)) {
+            return FOUR_OF_A_KIND;
         } else if (isPair(player)) {
             return PAIR;
         } else if (isTwoPair(player)) {
@@ -187,13 +191,39 @@ public class CompareCard implements Comparator<Card> {
     }
 
     private boolean isFourKindOfAKind(List<Card> player) {
+        HashMap<String, Integer> cardHashMap = (HashMap<String, Integer>) generateCardStringIntegerMap(player);
         List<Integer> playerDistinctNumberList = getDistinctCardNumberList(player);
-        if (playerDistinctNumberList.size()!=2){
+        if (playerDistinctNumberList.size() != 2) {
             return false;
-        }else{
-
+        } else {
+            for (HashMap.Entry<String, Integer> card : cardHashMap.entrySet()) {
+                if (card.getValue() > 3) {
+                    return true;
+                }
+            }
+            return false;
         }
-        return true;
+    }
+
+    private String compareCardTypeFourOFAKind(List<Card> player1, List<Card> player2) {
+        HashMap<String, Integer> player1cardHashMap = (HashMap<String, Integer>) generateCardStringIntegerMap(player1);
+        HashMap<String, Integer> player2cardHashMap = (HashMap<String, Integer>) generateCardStringIntegerMap(player2);
+        Integer player1MaxCountNumber=0;
+        Integer player2MaxCountNumber=0;
+        for (HashMap.Entry<String, Integer> card : player1cardHashMap.entrySet()) {
+            if (card.getValue() == 4) {
+               player1MaxCountNumber=card.getValue();
+            }
+        }
+        for (HashMap.Entry<String, Integer> card : player2cardHashMap.entrySet()) {
+            if (card.getValue() == 4) {
+                player2MaxCountNumber=card.getValue();
+            }
+        }
+        if (player1MaxCountNumber>player2MaxCountNumber){
+            return PLAYER_1_WIN;
+        }else
+            return PLAYER_2_WIN;
     }
 
     private List<Integer> getDistinctCardNumberList(List<Card> player) {
@@ -208,7 +238,6 @@ public class CompareCard implements Comparator<Card> {
         player1.forEach(e -> player1CardNumberList.add(Integer.parseInt(e.getNumber())));
         return player1CardNumberList;
     }
-
 
     private String compareCardTypeFullHouse(List<Card> player1, List<Card> player2) {
         System.out.println("compareCardTypeFullHouse");
@@ -243,7 +272,6 @@ public class CompareCard implements Comparator<Card> {
             return compareCardTypeBase(player1ThreeOfAKiindList, player2ThreeOfAKiindList);
         }
     }
-
 
     private String compareCardTypePair(List<Card> player1, List<Card> player2) {
         List<Integer> player1CardNumberList = new ArrayList<>();
