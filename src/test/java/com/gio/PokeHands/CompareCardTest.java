@@ -342,7 +342,6 @@ public class CompareCardTest {
       add(new Card("H","9"));
       add(new Card("S","T"));
     }};
-
     CompareCard compareCard = new CompareCard();
     String result = compareCard.judgeTwoPlayerPoke(player1,player2);
     Assert.assertEquals(PLAYER_1_WIN,result);
