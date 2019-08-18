@@ -23,11 +23,7 @@ public class CompareCard implements Comparator<Card> {
     private static final int FOUR_OF_A_KIND = 8;
     private static final int STRAIGHTFLUSH = 9;
 
-    private static Map<String, Integer> playerMap1 = null;
-    private static Map<String, Integer> playerMap2 = null;
-
     public String judgeTwoPlayerPoke(List<Card> player1, List<Card> player2) {
-
         Integer playerCardType1 = getCardType(player1);
         Integer playerCardType2 = getCardType(player2);
         if (playerCardType1 > playerCardType2) {
@@ -53,7 +49,10 @@ public class CompareCard implements Comparator<Card> {
                     result = compareCardTypeFullHouse(player1, player2);
                     break;
                 case FOUR_OF_A_KIND:
-                    result = compareCardTypeFourOFAKind(player1,player2);
+                    result = compareCardTypeFourOFAKind(player1, player2);
+                    break;
+                case STRAIGHTFLUSH:
+                    result = compareStraightFlush(player1,player2);
                     break;
             }
             return result;
@@ -62,16 +61,17 @@ public class CompareCard implements Comparator<Card> {
         }
     }
 
-
     @Override
     public int compare(Card c1, Card c2) {
-        System.out.println("c1" + c1.getNumber() + "\nc2:" + c2.getNumber());
+        //System.out.println("c1" + c1.getNumber() + "\nc2:" + c2.getNumber());
         return Integer.parseInt(c1.getNumber()) -
                 Integer.parseInt(c2.getNumber());
     }
 
     private int getCardType(List<Card> player) {
-        if (isStraight(player)) {
+        if (isStraightFlush(player)) {
+            return STRAIGHTFLUSH;
+        } else if (isStraight(player)) {
             return STRAIGHT;
         } else if (isFlush(player)) {
             return FLUSH;
@@ -205,24 +205,30 @@ public class CompareCard implements Comparator<Card> {
         }
     }
 
+    private boolean isStraightFlush(List<Card> player) {
+        return isStraight(player) && isFlush(player);
+    }
+    private String compareStraightFlush(List<Card> player1, List<Card> player2){
+        return compareCardTypeHighCard(player1,player2);
+    }
     private String compareCardTypeFourOFAKind(List<Card> player1, List<Card> player2) {
         HashMap<String, Integer> player1cardHashMap = (HashMap<String, Integer>) generateCardStringIntegerMap(player1);
         HashMap<String, Integer> player2cardHashMap = (HashMap<String, Integer>) generateCardStringIntegerMap(player2);
-        Integer player1MaxCountNumber=0;
-        Integer player2MaxCountNumber=0;
+        Integer player1MaxCountNumber = 0;
+        Integer player2MaxCountNumber = 0;
         for (HashMap.Entry<String, Integer> card : player1cardHashMap.entrySet()) {
             if (card.getValue() == 4) {
-               player1MaxCountNumber=card.getValue();
+                player1MaxCountNumber = card.getValue();
             }
         }
         for (HashMap.Entry<String, Integer> card : player2cardHashMap.entrySet()) {
             if (card.getValue() == 4) {
-                player2MaxCountNumber=card.getValue();
+                player2MaxCountNumber = card.getValue();
             }
         }
-        if (player1MaxCountNumber>player2MaxCountNumber){
+        if (player1MaxCountNumber > player2MaxCountNumber) {
             return PLAYER_1_WIN;
-        }else
+        } else
             return PLAYER_2_WIN;
     }
 
