@@ -1,22 +1,11 @@
 package com.gio.PokeHands;
 
-import java.util.Comparator;
 import java.util.HashMap;
 
 
 public class Card  {
   private String color;
   private String number;
-  private Integer pokeType;
-
-  public Integer getPokeType() {
-    return pokeType;
-  }
-
-  public void setPokeType(Integer pokeType) {
-    this.pokeType = pokeType;
-  }
-
   public static HashMap<String, String>  integerHashMap = new HashMap<String, String>();
   static {
     integerHashMap.put("T","10");
@@ -29,12 +18,6 @@ public class Card  {
   public Card(String color, String number) {
     this.color = color;
     this.number = number;
-  }
-
-  public Card(String color, String number, Integer pokeType) {
-    this.color = color;
-    this.number = number;
-    this.pokeType = pokeType;
   }
 
   public Card(){}

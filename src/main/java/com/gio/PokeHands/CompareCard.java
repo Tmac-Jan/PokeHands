@@ -63,7 +63,6 @@ public class CompareCard implements Comparator<Card> {
 
     @Override
     public int compare(Card c1, Card c2) {
-        //System.out.println("c1" + c1.getNumber() + "\nc2:" + c2.getNumber());
         return Integer.parseInt(c1.getNumber()) -
                 Integer.parseInt(c2.getNumber());
     }
@@ -101,8 +100,7 @@ public class CompareCard implements Comparator<Card> {
             }
         }
         if (count == 0) {
-            boolean result = isStraight(player);
-            if (!result) {
+            if (!isStraight(player)) {
                 if (isFlush(player)) {
                     return false;
                 } else
@@ -122,7 +120,7 @@ public class CompareCard implements Comparator<Card> {
                 count++;
             }
         }
-        return count > 0 ? true : false;
+        return count > 0;
     }
 
     private boolean isTwoPair(List<Card> player) {
@@ -133,7 +131,7 @@ public class CompareCard implements Comparator<Card> {
                 count++;
             }
         }
-        return count > 1 ? true : false;
+        return count > 1 ;
     }
 
     private boolean isThreeOfAKind(List<Card> player) {
@@ -145,7 +143,7 @@ public class CompareCard implements Comparator<Card> {
                 count++;
             }
         }
-        return count > 1 ? true : false;
+        return count > 1 ;
     }
 
     private Map<String, Integer> generateCardStringIntegerMap(List<Card> player) {
@@ -182,7 +180,7 @@ public class CompareCard implements Comparator<Card> {
             }
         });
 
-        return cardColorMap.size() == 1 ? true : false;
+        return cardColorMap.size() == 1 ;
     }
 
     private boolean isFullHouse(List<Card> player) {
@@ -246,12 +244,10 @@ public class CompareCard implements Comparator<Card> {
     }
 
     private String compareCardTypeFullHouse(List<Card> player1, List<Card> player2) {
-        System.out.println("compareCardTypeFullHouse");
         return compareCardTypeThreeOfAKind(player1, player2);
     }
 
     private String compareCardTypeFlush(List<Card> player1, List<Card> player2) {
-        System.out.println("compareCardTypeFlush");
         return compareCardTypeHighCard(player1, player2);
     }
 
